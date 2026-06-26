@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juan Sebastian Rojas — Desarrollador de Software</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── DARK ── */
+    :root, [data-theme="dark"] {
+      --bg:         #0b1512;
+      --bg2:        #111d18;
+      --bg3:        #162118;
+      --border:     #223028;
+      --accent:     #2ecc8a;
+      --accent2:    #89f5c4;
+      --text:       #e2ede8;
+      --muted:      #6b8f7c;
+      --header-bg:  #0e1f18;
+      --sidebar-bg: #111d18;
+      --nav-bg:     rgba(11,21,18,0.92);
+      --shadow:     rgba(46,204,138,0.12);
+      --tag-bg:     rgba(46,204,138,0.08);
+      --tag-border: rgba(46,204,138,0.22);
+      --card-bg:    #142019;
+      --pill-bg:    rgba(46,204,138,0.10);
+    }
+
+    /* ── LIGHT ── */
+    [data-theme="light"] {
+      --bg:         #f0f7f4;
+      --bg2:        #ffffff;
+      --bg3:        #e4f0eb;
+      --border:     #c2d9cc;
+      --accent:     #1a9964;
+      --accent2:    #0d7a4e;
+      --text:       #0d2018;
+      --muted:      #4a7060;
+      --header-bg:  #0d4a30;
+      --sidebar-bg: #f7fbf9;
+      --nav-bg:     rgba(240,247,244,0.93);
+      --shadow:     rgba(26,153,100,0.10);
+      --tag-bg:     rgba(26,153,100,0.08);
+      --tag-border: rgba(26,153,100,0.22);
+      --card-bg:    #eaf5f0;
+      --pill-bg:    rgba(26,153,100,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      z-index: 300;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--bg2);
+      color: var(--accent);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); transform: scale(1.08); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 3rem;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent2); }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 1.5rem 3rem;
+    }
+
+    /* ── HEADER CARD ── */
+    .header-card {
+      background: var(--header-bg);
+      border-radius: 16px 16px 0 0;
+      padding: 3rem 3rem 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-bottom: none;
+    }
+    .header-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 90% 50%, rgba(46,204,138,0.08) 0%, transparent 70%),
+        repeating-linear-gradient(
+          -45deg,
+          transparent, transparent 12px,
+          rgba(46,204,138,0.025) 12px, rgba(46,204,138,0.025) 13px
+        );
+      pointer-events: none;
+    }
+    .avatar-ring {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), transparent 60%);
+      padding: 2.5px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .avatar-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem;
+    }
+    .header-info { position: relative; z-index: 1; }
+    .header-role {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .header-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.2rem;
+      color: var(--text);
+    }
+    [data-theme="dark"] .header-name { color: #e2ede8; }
+    [data-theme="light"] .header-name { color: #fff; }
+    .header-name span { color: var(--accent); }
+    [data-theme="light"] .header-name span { color: var(--accent2); }
+    .header-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: var(--pill-bg);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    [data-theme="light"] .pill { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.75); }
+    .pill:hover { border-color: var(--accent); color: var(--accent2); }
+    [data-theme="light"] .pill:hover { color: #fff; border-color: #fff; }
+
+    /* ── TWO-COLUMN BODY ── */
+    .body-wrap {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 2.5rem 1.8rem;
+      transition: background 0.3s;
+    }
+    .sidebar-section { margin-bottom: 2.2rem; }
+    .sidebar-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 0.55rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-item:hover { color: var(--accent2); }
+    .contact-item-icon {
+      width: 20px; height: 20px;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-family: 'Fira Code', monospace;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .skill-tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      color: var(--accent2);
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .skill-tag:hover { background: rgba(46,204,138,0.18); }
+    [data-theme="light"] .skill-tag:hover { background: rgba(26,153,100,0.18); }
+    .soft-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .soft-list li {
+      font-size: 0.82rem; color: var(--muted);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .soft-list li::before {
+      content: ''; width: 5px; height: 5px;
+      border-radius: 50%; background: var(--accent); flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      background: var(--bg2);
+      padding: 2.5rem 2.8rem;
+      display: flex; flex-direction: column; gap: 2.5rem;
+      transition: background 0.3s;
+    }
+    .section-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; }
+    .section-head-icon {
+      width: 32px; height: 32px;
+      background: var(--tag-bg); border: 1px solid var(--tag-border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+    .section-head h2 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 1.05rem;
+      letter-spacing: -0.01em; color: var(--text);
+    }
+    .divider { width: 100%; height: 1px; background: var(--border); margin-bottom: 1.2rem; }
+    .profile-text { font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
+    .profile-text strong { color: var(--text); font-weight: 500; }
+    .profile-text + .profile-text { margin-top: 0.8rem; }
+
+    /* Experience */
+    .exp-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px; padding: 1.3rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s, background 0.3s;
+    }
+    .exp-item:hover { border-left-color: var(--accent2); }
+    .exp-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.4rem;
+    }
+    .exp-role { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .exp-company { font-size: 0.82rem; color: var(--accent); font-weight: 500; margin-top: 0.15rem; }
+    .exp-date {
+      font-family: 'Fira Code', monospace; font-size: 0.7rem;
+      color: var(--muted); background: var(--bg3);
+      border: 1px solid var(--border); padding: 0.2rem 0.6rem;
+      border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+    }
+    .exp-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.7; margin-top: 0.4rem; }
+
+    /* Projects */
+    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .proj-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.4rem;
+      transition: all 0.2s;
+    }
+    .proj-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 30px var(--shadow); }
+    .proj-emoji { font-size: 1.6rem; margin-bottom: 0.7rem; display: block; }
+    .proj-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 0.4rem; }
+    .proj-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.65; margin-bottom: 0.9rem; }
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
+    /* Hobbies */
+    .hobby-row {
+      display: flex; gap: 1rem;
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.2rem 1.4rem;
+      align-items: flex-start; margin-bottom: 0.8rem;
+      transition: border-color 0.2s, background 0.3s;
+    }
+    .hobby-row:hover { border-color: var(--accent); }
+    .hobby-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+    .hobby-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--text); margin-bottom: 0.2rem; }
+    .hobby-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── CONTACT BANNER ── */
+    .contact-banner {
+      background: var(--header-bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2.5rem 3rem; text-align: center;
+      position: relative; overflow: hidden; margin-top: 2.5rem;
+    }
+    .contact-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(46,204,138,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .contact-banner h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 0.6rem; position: relative;
+      color: #e2ede8;
+    }
+    [data-theme="light"] .contact-banner h2 { color: #fff; }
+    .contact-banner h2 span { color: var(--accent); }
+    .contact-banner p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.8rem; position: relative; }
+    [data-theme="light"] .contact-banner p { color: rgba(255,255,255,0.65); }
+    .contact-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Fira Code', monospace; font-size: 0.88rem;
+      color: var(--accent2); text-decoration: none;
+      border: 1px solid var(--border); padding: 0.8rem 2rem;
+      border-radius: 6px; transition: all 0.2s; position: relative;
+    }
+    .contact-link:hover { border-color: var(--accent); background: var(--tag-bg); }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 1100px; margin: 1.5rem auto 0;
+      padding: 0 1.5rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+    footer p { font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--muted); }
+    footer span { color: var(--accent); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 780px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { display: none; }
+      .page { padding: 5rem 0.8rem 2rem; }
+      .header-card { flex-direction: column; align-items: flex-start; padding: 2rem 1.5rem; gap: 1.5rem; }
+      .body-wrap { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+      .main-content { padding: 2rem 1.5rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .contact-banner { padding: 2rem 1.5rem; }
+      footer { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">🌙</button>
+
+  <nav>
+    <div class="nav-brand">JSR.dev</div>
+    <ul class="nav-links">
+      <li><a href="#perfil">Perfil</a></li>
+      <li><a href="#experiencia">Experiencia</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#habilidades">Habilidades</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="header-card reveal">
+      <div class="avatar-ring">
+        <div class="avatar-inner">👨‍💻</div>
+      </div>
+      <div class="header-info">
+        <div class="header-role">// Tecnólogo en Desarrollo de Software</div>
+        <h1 class="header-name">Juan Sebastian<br/><span>Rojas</span></h1>
+        <div class="header-pills">
+          <span class="pill">📍 Colombia 🇨🇴</span>
+          <a href="mailto:rojasguizaj@gmail.com" class="pill">✉️ rojasguizaj@gmail.com</a>
+          <a href="https://github.com" class="pill" target="_blank">⚙️ GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body-wrap">
+
+      <aside class="sidebar">
+
+        <div class="sidebar-section reveal">
+          <div class="sidebar-title">Contacto</div>
+          <a href="mailto:rojasguizaj@gmail.com" class="contact-item">
+            <div class="contact-item-icon">✉</div>rojasguizaj@gmail.com
+          </a>
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>Colombia, CO
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🎓</div>SENA
+          </div>
+          <a href="https://github.com" class="contact-item" target="_blank">
+            <div class="contact-item-icon">gh</div>github.com/JSRojas
+          </a>
+        </div>
+
+        <div class="sidebar-section reveal" id="habilidades">
+          <div class="sidebar-title">Stack técnico</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">GitHub</span>
+            <span class="skill-tag">MySQL</span>
+            <span class="skill-tag">Linux</span>
+            <span class="skill-tag">HTML</span>
+            <span class="skill-tag">CSS</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section reveal">
+          <div class="sidebar-title">Hardware</div>
+          <ul class="soft-list">
+            <li>Diagnóstico electrónico</li>
+            <li>Reparación de TV</li>
+            <li>Equipos de sonido</li>
+            <li>Sustitución de componentes</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section reveal">
+          <div class="sidebar-title">Competencias</div>
+          <ul class="soft-list">
+            <li>Trabajo en equipo</li>
+            <li>Liderazgo</li>
+            <li>Comunicación efectiva</li>
+            <li>Documentación técnica</li>
+            <li>Análisis de requerimientos</li>
+            <li>Resolución de problemas</li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section reveal">
+          <div class="sidebar-title">Idiomas</div>
+          <ul class="soft-list">
+            <li>Español — nativo</li>
+            <li>Inglés — en progreso 🌱</li>
+          </ul>
+        </div>
+
+      </aside>
+
+      <main class="main-content">
+
+        <div id="perfil" class="reveal">
+          <div class="section-head">
+            <div class="section-head-icon">🎯</div>
+            <h2>Perfil Profesional</h2>
+          </div>
+          <div class="divider"></div>
+          <p class="profile-text">
+            Al concluir el Tecnólogo en Desarrollo de Software, aspiro a posicionarme como
+            <strong>Desarrollador de Software</strong> con capacidad para diseñar, construir y mantener
+            aplicaciones que respondan a necesidades reales del entorno empresarial y social.
+          </p>
+          <p class="profile-text">
+            Mi objetivo es integrarme a <strong>equipos ágiles</strong> donde pueda aportar con código limpio,
+            documentación técnica precisa y una mentalidad orientada a la mejora continua. A mediano plazo,
+            busco especializarme en el desarrollo backend, explorar arquitecturas escalables y consolidar
+            habilidades en automatización y gestión de bases de datos.
+          </p>
+        </div>
+
+        <div id="experiencia" class="reveal">
+          <div class="section-head">
+            <div class="section-head-icon">💼</div>
+            <h2>Experiencia Laboral</h2>
+          </div>
+          <div class="divider"></div>
+          <div class="exp-item">
+            <div class="exp-header">
+              <div>
+                <div class="exp-role">Técnico en Reparación de Equipos Electrónicos</div>
+                <div class="exp-company">JJ Electronics</div>
+              </div>
+              <div class="exp-date">2023 — 2026</div>
+            </div>
+            <p class="exp-desc">
+              Diagnóstico y reparación de equipos electrónicos: televisores, equipos de sonido y dispositivos
+              similares. Identificación de fallas a nivel de componentes, sustitución de piezas y verificación
+              post-reparación. Experiencia que fortaleció la capacidad analítica, atención al detalle y comprensión
+              del hardware — competencias que complementan directamente el perfil de un desarrollador orientado a soluciones reales.
+            </p>
+          </div>
+        </div>
+
+        <div id="proyectos" class="reveal">
+          <div class="section-head">
+            <div class="section-head-icon">🛠️</div>
+            <h2>Proyectos Realizados</h2>
+          </div>
+          <div class="divider"></div>
+          <div class="projects-grid">
+            <div class="proj-card">
+              <span class="proj-emoji">🎛️</span>
+              <div class="proj-name">ClassControl</div>
+              <p class="proj-desc">
+                Sistema de gestión y control para entornos académicos. Permite administrar clases,
+                registros y seguimiento de actividades con base de datos estructurada.
+              </p>
+              <div class="proj-tags">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">SQL</span>
+                <span class="skill-tag">Git</span>
+              </div>
+            </div>
+            <div class="proj-card">
+              <span class="proj-emoji">📁</span>
+              <div class="proj-name">En desarrollo...</div>
+              <p class="proj-desc">
+                Próximo proyecto en construcción. Cada línea de código es un paso hacia el perfil profesional
+                que se busca consolidar al finalizar el tecnólogo.
+              </p>
+              <div class="proj-tags">
+                <span class="skill-tag">Próximamente</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <div class="section-head">
+            <div class="section-head-icon">🌱</div>
+            <h2>Más allá del código</h2>
+          </div>
+          <div class="divider"></div>
+          <div class="hobby-row">
+            <div class="hobby-icon">🌐</div>
+            <div>
+              <div class="hobby-name">Aprendizaje de Inglés</div>
+              <p class="hobby-desc">
+                Estudio constante del idioma inglés como herramienta profesional clave. Abre puertas a
+                documentación técnica, comunidades globales de desarrollo y oportunidades internacionales.
+              </p>
+            </div>
+          </div>
+          <div class="hobby-row">
+            <div class="hobby-icon">💡</div>
+            <div>
+              <div class="hobby-name">Curiosidad tecnológica</div>
+              <p class="hobby-desc">
+                Explorar nuevas herramientas, leer sobre tendencias y experimentar en proyectos personales
+                mantiene el perfil siempre actualizado y en crecimiento.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <div class="contact-banner reveal" id="contacto">
+      <h2>¿<span>Hablamos</span>?</h2>
+      <p>Si tienes un proyecto, una oportunidad o simplemente quieres conectar, escríbeme.</p>
+      <a href="mailto:rojasguizaj@gmail.com" class="contact-link">✉ rojasguizaj@gmail.com</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2025 <span>Juan Sebastian Rojas</span> — Tecnólogo en Desarrollo de Software</p>
+    <p>Colombia 🇨🇴 · Hecho con <span>código y café</span></p>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => io.observe(r));
+
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const saved = localStorage.getItem('jsrTheme2') || 'dark';
+    html.setAttribute('data-theme', saved);
+    btn.textContent = saved === 'dark' ? '🌙' : '☀️';
+    btn.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      btn.textContent = next === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('jsrTheme2', next);
+    });
+  </script>
+</body>
+</html>
